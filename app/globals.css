@@ -3,11 +3,20 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Rose-gold palette from logo */
+  --brand-rose: #c49a84;
+  --brand-copper: #a67c65;
+  --brand-blush: #f8ebe4;
+  --brand-mist: #edd9ce;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-rose: var(--brand-rose);
+  --color-brand-copper: var(--brand-copper);
+  --color-brand-blush: var(--brand-blush);
+  --color-brand-mist: var(--brand-mist);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -23,4 +32,52 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/*
+ * Same layout as harelcoman.dev: two large circles in the corners (not a full-width band).
+ * Colors: Ilana rose-gold instead of emerald/cyan.
+ */
+.page-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background-image:
+    radial-gradient(900px circle at 20% -10%, rgba(196, 154, 132, 0.2), transparent),
+    radial-gradient(800px circle at 80% 0%, rgba(248, 235, 228, 0.28), transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  .page-glow {
+    background-image:
+      radial-gradient(900px circle at 20% -10%, rgba(166, 124, 101, 0.14), transparent),
+      radial-gradient(800px circle at 80% 0%, rgba(196, 154, 132, 0.1), transparent);
+  }
+}
+
+/* Next.js dev-only floating indicator (circular logo) */
+[data-nextjs-dev-tools-button],
+[data-nextjs-dev-tools-menu],
+nextjs-portal {
+  display: none !important;
+}
+
+/* Chat: scroll target sections sit below sticky header */
+#about-me-title,
+#skills-heading,
+#experience-heading,
+#education-heading,
+#training-heading,
+#projects-title,
+#hero-heading {
+  scroll-margin-top: 5.5rem;
+}
+
+.chat-section-highlight {
+  outline: 2px solid var(--brand-rose);
+  outline-offset: 6px;
+  border-radius: 0.75rem;
+  transition: outline-color 0.25s ease;
 }

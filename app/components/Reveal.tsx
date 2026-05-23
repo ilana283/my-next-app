@@ -25,7 +25,7 @@ export function Reveal({ children, className = "" }: RevealProps) {
           observer.disconnect();
         }
       },
-      { threshold: 0.12, rootMargin: "0px 0px -10% 0px" }
+      { threshold: 0.12, rootMargin: "0px 0px -10% 0px" },
     );
 
     observer.observe(el);
@@ -37,7 +37,7 @@ export function Reveal({ children, className = "" }: RevealProps) {
       ref={ref}
       className={[
         "transition duration-700 will-change-transform",
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3",
+        visible ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
         className,
       ].join(" ")}
     >
@@ -45,4 +45,3 @@ export function Reveal({ children, className = "" }: RevealProps) {
     </div>
   );
 }
-

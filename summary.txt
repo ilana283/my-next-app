@@ -1,91 +1,115 @@
 ================================================================================
-PROJECT SUMMARY — my-next-app (Ilana Priev portfolio)
-Last updated: 2026-05-02
+PROJECT SUMMARY — Ilana Priev portfolio (AIDD course)
+Last updated: 2026-05-23
 ================================================================================
 
 --- עברית (קצר) -------------------------------------------------------------
 
-מטרה: אתר פורטפוליו באנגלית לקורס AI / פיתוח — Next.js, GitHub, Vercel.
-אין עמוד תחביבים. התוכן המרכזי בקובץ app/site.ts; העיצוב ב-app/page.tsx.
-זרימת עבודה מוסכמת: תמיד ענף feature → Pull Request ל-main → רק אז production.
-אם build ב-Vercel נכשל: לבדוק שאין סימני merge conflict בקבצים (<<<<<<<).
+מטרה: אתר פורטפוליו באנגלית לקורס AI-Driven Development — Next.js, GitHub, Vercel.
+רוב התוכן ב-app/site.ts; עמודים ב-app/*/page.tsx; מעטפת משותפת ב-app/components.
+
+עמודים: Home (/), About (/about), Projects (/projects). אין עמוד Contact נפרד —
+פרטי קשר ב-Home (קישורים) ובצ'אט (מייל כשמגיעים למגבלת שאלות / off-topic).
+
+צ'אט AI: ווידג'ט צף (פינה ימין למטה). ללא OPENAI_API_KEY — תשובות מ-site.ts
+(lib/chat-topics.ts). עם מפתח — OpenAI gpt-4o-mini. מגבלה: 3 שאלות לביקור
+(CHAT_LIMIT_ENABLED=true). אווטאר: app/Chat.png (כפתור פתיחה + כותרת + הודעות).
+אחרי רענון דף — היסטוריית צ'אט מתאפסת (sessionStorage).
+
+עיצוב: רקע page-glow (השראה harelcoman.dev), לוגו public/logo.png,
+תמונת פרופיל public/profile.jpg, צבעי brand ב-globals.css.
+
+זרימה: feature branch → Pull Request → merge ל-main → Vercel Production.
 
 --- English (handoff for another developer) ------------------------------------
 
 1. PROJECT OVERVIEW
-   - Stack: Next.js 16.x, React 19, TypeScript, Tailwind CSS v4, ESLint.
-   - Repo: GitHub (e.g. ilana283/my-next-app). Hosting: Vercel linked to GitHub.
-   - Site language: English. Single-page portfolio (sections + anchor nav).
+   - Stack: Next.js 16.x, React 19, TypeScript, Tailwind CSS v4, ESLint, Prettier.
+   - AI chat: packages `ai`, `@ai-sdk/react`, `@ai-sdk/openai`.
+   - Hosting: Vercel linked to GitHub (ilana283/my-next-app or AI-Driven-Development).
+   - Site language: English; chat may answer in Hebrew when the user writes in Hebrew.
 
-2. WHAT THE OWNER ASKED FOR (requirements collected over time)
-   - Portfolio site reflecting resume: System Integration Engineer, EE background.
-   - English only; no hobbies section.
-   - Design: not “plain resume on the web” — use card/panel boxes and subtle color
-     (sky accent borders, gradient background) similar in spirit to example sites
-     discussed (e.g. harelcoman.dev) — implemented as reusable Panel components.
-   - Git workflow: do NOT push unreviewed changes straight to production habitually;
-     use a branch per change, open a Pull Request, merge when satisfied. Vercel
-     Preview for the branch; Production typically tracks main.
-   - After git stash / pull / stash pop: resolve merge conflicts carefully — never
-     commit files containing conflict markers (<<<<<<<, =======, >>>>>>>); they
-     break `next build` and Vercel deployments.
-   - Explanations for course context: prefer simple language when describing
-     tooling (owner is EE background, not primarily SW engineering).
+2. INFORMATION ARCHITECTURE (routes)
+   - /                 Home — hero (name, role, tagline, profile photo, CTA links),
+                       featured projects from site.projects.
+   - /about            About me, Experience (Timeline), Education, Training, Skills.
+   - /projects         Full project list (ProjectCard).
+   - No /contact page — contact via home links and chat fallback email.
 
-3. REPOSITORY LAYOUT (important paths)
-   - app/site.ts       — All structured content: nav, about[], experience[],
-                         education[], military, languages, projects[]. Edit here
-                         for text/resume updates without restructuring UI.
-   - app/page.tsx      — UI: Header, sections, Panel + SectionTitle, footer.
-   - app/layout.tsx    — Root layout, Geist fonts, metadata (title/description).
-   - app/globals.css   — Tailwind import, CSS variables, body font.
-   - public/           — Static assets if added later.
+3. KEY FILES — CONTENT & SHELL
+   - app/site.ts          Single source: nav, about, experience, education, training,
+                          skills, projects, links, logo, profileImage, chat copy,
+                          CHAT_MAX_QUESTIONS, CHAT_LIMIT_ENABLED.
+   - app/layout.tsx       Fonts, metadata, ChatWidgetRoot (global floating chat).
+   - app/globals.css      Tailwind v4, brand tokens, .page-glow background.
+   - app/components/
+       SiteShell.tsx      Header (LogoWordmark + nav), main, footer.
+       Reveal.tsx         Scroll reveal (client).
+       ui.tsx             Panel, SectionTitle.
+       LogoWordmark.tsx   Navbar logo image.
+       ProfileAvatar.tsx  Home hero photo.
+       Timeline.tsx       Experience + education layout (subtitleBelowTitle option).
+       SkillsSection.tsx  Skill categories (Title Case headings).
+       ProjectCard.tsx    Projects page cards.
 
-4. LOCAL DEVELOPMENT
-   - Prerequisites: Node.js, npm (or pnpm if you switch).
-   - From repo root (folder that contains package.json and .git):
+4. KEY FILES — AI CHAT
+   - app/Chat.png           Assistant avatar (imported statically).
+   - app/chat-avatars.ts    Exports chatAvatar for UI.
+   - app/components/ChatWidget.tsx   Floating pill + avatar toggle button + panel.
+   - app/components/Chat.tsx         Messages, 3-question counter, section scroll.
+   - app/components/ChatAvatar.tsx   Circular avatar (sm/md/lg).
+   - app/components/ChatWidgetRoot.tsx
+   - app/components/chat-navigate.ts revealSiteSection + highlight after reply.
+   - app/api/chat/route.ts  POST /api/chat — OpenAI or site fallback.
+   - lib/chat-topics.ts     Topic detection + answerFromSiteContent (Hebrew/English).
+   - lib/chat-fallback.ts   Re-exports topics.
+   - lib/chat-storage.ts    sessionStorage; clear on page load (refresh).
+   - lib/site-context.ts    System prompt when OpenAI is configured.
+   - .env.example           OPENAI_API_KEY (optional).
+
+5. CHAT BEHAVIOUR
+   - Placeholder pill: "Ask about Ilana..." when closed; closed state button shows
+     avatar image (not chat icon). Open state: close (X) on copper button.
+   - limitReached + offTopicReply point to ilana.p283@gmail.com.
+   - detectChatTopic scrolls/highlights relevant section (e.g. education → /about).
+   - Server rejects >3 user turns per request when CHAT_LIMIT_ENABLED.
+
+6. BRANDING & ASSETS
+   - public/logo.png, public/logo-original.png — wordmark; optimize via
+     npm run optimize:logo (scripts/optimize-logo-tagline.mjs).
+   - public/profile.jpg — home hero.
+   - app/icon.png — tab icon (hand-tuned; npm run generate:icon → preview only).
+
+7. LOCAL DEVELOPMENT
        npm install
-       npm run dev
-     Open http://localhost:3000
-   - Quality checks:
+       npm run dev              → http://localhost:3000
        npm run lint
+       npm run typecheck
+       npm run format:check
+       npm run check            → lint + typecheck + format:check
        npm run build
+   Optional: .env.local with OPENAI_API_KEY=sk-...
 
-5. GIT & DEPLOYMENT WORKFLOW (agreed process)
+8. GIT & DEPLOYMENT
    - git checkout main && git pull origin main
    - git checkout -b feature/short-description
-   - Make changes, then:
-       git add .
-       git commit -m "Clear message"
-       git push -u origin feature/short-description
-   - On GitHub: open Pull Request into main; verify Vercel Preview in PR comment.
-   - Merge PR when ready → production redeploy (per Vercel project settings).
-   - Locally after merge: git checkout main && git pull origin main
-   - If pull is blocked by local edits: git stash, pull, git stash pop — then
-     resolve conflicts in editor before committing.
+   - commit, push, open PR, verify Vercel Preview, merge to main.
+   - Do not commit .env*, .next/, merge conflict markers.
 
-6. KNOWN ISSUES ALREADY FIXED (historical)
-   - Unresolved merge conflict markers left inside app/page.tsx after stash pop
-     caused Turbopack/Next build to fail; Vercel deployment failed for same reason.
-     Fix: remove markers and keep a single coherent page.tsx (card layout version).
+9. RECENT CHANGES (2026-05-23)
+   - AI portfolio chat with site-only fallback and optional OpenAI.
+   - 3 questions per visit; session cleared on full page reload.
+   - Hebrew topic matching (name, work, education, skills, etc.).
+   - Avatar in chat header, messages, and floating open button (Chat.png).
+   - Removed separate Contact page; nav is Home / About / Projects.
+   - About: Timeline education layout, Training inline title, Skills Title Case.
+   - Background: .page-glow radial gradients (Ilana brand colors).
+   - Logo tagline optimization script; ProfileAvatar on home.
 
-7. CURRENT STATUS (at time of writing this file)
-   - app/site.ts and app/page.tsx present with full portfolio structure:
-     Hero, About, Experience, Education (+ military/languages panel), Projects,
-     Contact. Card-style panels with left accent borders.
-   - Build/lint: should pass after clean checkout (run npm run build to confirm).
-   - Any local uncommitted changes or unpushed branches are not tracked here;
-     run git status on the machine for truth.
-
-8. SUGGESTED NEXT STEPS
-   - Set projects[].href in site.ts to the production Vercel URL when stable.
-   - Optional: add GitHub link if desired; analytics (Vercel Web Analytics) if needed.
-   - Keep using feature branches + PRs for every site update.
-
-9. REFERENCES
-   - Example site discussed: https://harelcoman.dev/
-   - Example repo discussed: https://github.com/haco29/personal-website
-   - Workspace rules in repo: AGENTS.md / CLAUDE.md (Next.js version notes).
+10. REFERENCES
+   - Example portfolio: https://harelcoman.dev/
+   - Example repo: https://github.com/haco29/personal-website
+   - AGENTS.md / CLAUDE.md — Next.js version notes for agents.
 
 ================================================================================
 End of summary

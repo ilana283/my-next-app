@@ -12,10 +12,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
-const candidates = [
-  resolve(root, "public", "logo.png"),
-  resolve(root, "app", "Logo.png"),
-];
+const candidates = [resolve(root, "public", "logo.png"), resolve(root, "app", "Logo.png")];
 
 let src = candidates.find(existsSync);
 if (!src) {
