@@ -14,12 +14,60 @@ function GitHubIcon({ className }: { className?: string }) {
   );
 }
 
+function PreviewIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"
+      />
+    </svg>
+  );
+}
+
+function ProjectLink({
+  href,
+  label,
+  icon,
+}: {
+  href: string;
+  label: string;
+  icon: "github" | "preview";
+}) {
+  const external = href.startsWith("http");
+
+  return (
+    <a
+      href={href}
+      className="hover:text-brand-copper dark:hover:text-brand-rose inline-flex items-center gap-2 text-sm font-medium text-zinc-800 transition dark:text-zinc-200"
+      {...(external ? { rel: "noreferrer", target: "_blank" } : {})}
+    >
+      {icon === "github" ? (
+        <GitHubIcon className="h-4 w-4 shrink-0" />
+      ) : (
+        <PreviewIcon className="h-4 w-4 shrink-0" />
+      )}
+      {label}
+    </a>
+  );
+}
+
 type ProjectCardProps = {
   project: ProjectItem;
 };
 
 export function ProjectCard({ project }: ProjectCardProps) {
   const showGithub = Boolean(project.githubHref);
+  const showPreview = Boolean(project.previewHref && project.previewLabel);
+  const showLinks = showGithub || showPreview;
 
   return (
     <article className="group hover:border-brand-rose/50 hover:bg-brand-blush/30 dark:hover:border-brand-rose/40 dark:hover:bg-brand-copper/10 flex h-full flex-col rounded-xl border border-zinc-200/90 bg-white/90 p-5 shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:shadow-lg dark:border-zinc-700/90 dark:bg-zinc-900/60 dark:hover:shadow-[0_8px_32px_rgba(196,154,132,0.15)]">
@@ -41,16 +89,19 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </ul>
       ) : null}
       <div className="mt-auto pt-5">
-        {showGithub ? (
-          <a
-            href={project.githubHref}
-            className="hover:text-brand-copper dark:hover:text-brand-rose inline-flex items-center gap-2 text-sm font-medium text-zinc-800 transition dark:text-zinc-200"
-            rel="noreferrer"
-            target="_blank"
-          >
-            <GitHubIcon className="h-4 w-4 shrink-0" />
-            GitHub
-          </a>
+        {showLinks ? (
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            {showPreview ? (
+              <ProjectLink
+                href={project.previewHref!}
+                label={project.previewLabel!}
+                icon="preview"
+              />
+            ) : null}
+            {showGithub ? (
+              <ProjectLink href={project.githubHref!} label="GitHub" icon="github" />
+            ) : null}
+          </div>
         ) : null}
       </div>
     </article>

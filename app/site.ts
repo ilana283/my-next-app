@@ -49,6 +49,9 @@ export type ProjectItem = {
   description: string;
   /** Omit when no public repo link yet */
   githubHref?: string;
+  /** Optional link to a preview page or asset (e.g. PCB layout image) */
+  previewHref?: string;
+  previewLabel?: string;
   tech?: string[];
 };
 
@@ -181,6 +184,7 @@ export const site = {
     {
       title: "AI-Driven Development",
       provider: "HIT, Holon",
+      period: "2026",
       description:
         "Professional workshop on AI-Driven Development — systematic use of Cursor AI, Git and static analysis to deliver a production Next.js portfolio with full code ownership and documented review loops.",
     },
@@ -190,6 +194,8 @@ export const site = {
       name: "PCB Design Project",
       description:
         "Developed an IR proximity detector using Altium Designer — schematic design, PCB layout and manufacturing and assembly files.",
+      previewHref: "/projects/pcb-design",
+      previewLabel: "View PCB",
       tech: ["Altium Designer", "PCB"],
     },
     {
@@ -204,6 +210,8 @@ export const site = {
       name: "Computer Vision Project",
       description:
         "Deep learning model to detect and track human movement in video using image processing techniques.",
+      previewHref: "/projects/computer-vision",
+      previewLabel: "Watch video",
       tech: ["Python", "Deep Learning"],
     },
     {
